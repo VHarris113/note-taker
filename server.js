@@ -39,8 +39,21 @@ app.post("/api/notes", (req, res) => {
 });
 
 app.delete("/api/notes/:id", (req, res) => {
-    let savedNotes = 
-})
+    let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+    let noteWithId = req.params.id;
+    let oldId = 0;
+    console.log("Note Deleted!");
+    savedNotes = savedNotes.filter(currentNote => {
+        return currentNote.id != noteWithId;
+    });
 
+    for (currentNote of savedNotes) {
+        currentNote.id = oldId.toString();
+        oldId++;
+    }
+
+    fs.writeFileSync("./db/db.json", JSON.stringify(savedNotes));
+    res.json(savedNotes);
+})
 
 app.listen(PORT, () => console.log(`It's over ${PORT}!!!`));
