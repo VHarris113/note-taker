@@ -1,36 +1,42 @@
 const fs = require('fs');
-const database = require('./db/db.json');
-const index = require('./public/assets/js/index')
+const path = require('path');
 
-app.get('/api/index', (req, res) => {
-    res.json(database);
+module.exports = app => {
+    fs.readFile("db/db.json", "utf8", (err, data) => {
 
-});
+        if (err) throw err;
 
-app.post('/api/index', (req, res) => {
-    console.log(req.body);
-    const savedNotes = path.join(__dirname, '/db/db.json');
-    const newNote = req.body;
+        const notes = JSON.parse(data);
 
-    let noteAmount = 99;
-    for(let i = 0; i < database.length; i++) {
-        const note = database[i];
-        if (note.id > noteAmount) {
-            noteAmount = note.id;
-        }
-    }
-    newNote.id = noteAmount + 1;
-    database.push(newNote);
+        app.get('/api/notes', (req, res) => {
+            res.json(notes);
+        });
 
-    fs.writeFile(savedNotes, JSON.stringify(database), function(err) {
-        if(err) {
-            return console.log(err);
-        }
-        console.log("You saved one note!");
+    app.post('/api/notes', (req, res) => {
+        let newNote = req.body;
+        notes.push(newNote);
+        updateDb();
+        return console.log("Added new note to your log!");
     });
-    res.json(newNote);
-});
 
-app.delete('api/index', (req, res) => {
+    app.get("api/notes/:id", (req, res) => {
+        res.json(notes[req.params.id]);
+    });
 
-});
+    app.delete("api/notes/:id", (req, res) => {
+        notes.splice(req.params.id, 1);
+        updateDb();
+        console.log("Note deleted.");
+    });
+
+    app.get('/', (req, res) => res.sendFile(path.join(__dirname, './public/index.html')));
+    app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, './public/notes.html')));
+
+    function updateDb() {
+        fs.writeFile("db/db.json", JSON.stringify(notes, "\t"), err => {
+            if (err) throw err;
+            return true;
+    })}
+
+    });
+}
