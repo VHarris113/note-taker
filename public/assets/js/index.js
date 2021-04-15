@@ -1,3 +1,4 @@
+const server = require('server.js');
 let noteTitle;
 let noteText;
 let saveNoteBtn;
