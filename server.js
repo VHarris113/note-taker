@@ -32,6 +32,10 @@ app.post("/api/notes", (req, res) => {
     let noteId = (savedNotes.length).toString();
     newNote.id = noteId;
     savedNotes.push(newNote);
+
+    fs.writeFileSync("./db/db.json", JSON.stringify(savedNotes));
+    console.log("Note saved!", newNote);
+    res.json(savedNotes);
 });
 
 app.delete("/api/notes/:id", (req, res) => {
