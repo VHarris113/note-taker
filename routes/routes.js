@@ -1,42 +1,43 @@
-const fs = require('fs');
-const path = require('path');
 
-module.exports = app => {
-    fs.readFile("db/db.json", "utf8", (err, data) => {
+// const fs = require('fs');
+// const path = require('path');
 
-        if (err) throw err;
 
-        const notes = JSON.parse(data);
+// app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public/index.html')));
+// app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, 'public/notes.html')));
 
-        app.get('/api/notes', (req, res) => {
-            res.json(notes);
-        });
+// module.exports = app => {
+//     fs.readFile("db/db.json", (err, data) => {
 
-    app.post('/api/notes', (req, res) => {
-        let newNote = req.body;
-        notes.push(newNote);
-        updateDb();
-        return console.log("Added new note to your log!");
-    });
+//         if (err) throw err;
 
-    app.get("api/notes/:id", (req, res) => {
-        res.json(notes[req.params.id]);
-    });
+//         const notes = json.parse(data);
 
-    app.delete("api/notes/:id", (req, res) => {
-        notes.splice(req.params.id, 1);
-        updateDb();
-        console.log("Note deleted.");
-    });
+//         app.get('/api/notes', (req, res) => {
+//             res.json(notes);
+//         });
 
-    app.get('/', (req, res) => res.sendFile(path.join(__dirname, './public/index.html')));
-    app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, './public/notes.html')));
+//     app.post('/api/notes', (req, res) => {
+//         let newNote = req.body;
+//         notes.push(newNote);
+//         updateDb();
+//         return console.log("Added new note to your log!");
+//     });
 
-    function updateDb() {
-        fs.writeFile("db/db.json", JSON.stringify(notes, "\t"), err => {
-            if (err) throw err;
-            return true;
-    })}
+//     app.get("api/notes/:id", (req, res) => {
+//         res.json(notes[req.params.id]);
+//     });
 
-    });
-}
+//     app.delete('api/notes/:id', (req, res) => {
+//         notes.splice(req.params.id, 1);
+//         updateDb();;
+//     });
+
+//     function updateDb() {
+//         fs.writeFile("db/db.json", JSON.stringify(notes, "\t"), err => {
+//             if (err) throw err;
+//             return true;
+//     })}
+
+//     });
+// }
